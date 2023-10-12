@@ -28,7 +28,7 @@ adjust_position (left_most_pos, cigar, flag):
             start_position = left_most_pos - soft clipping
         if reverse_strand:
             start_position = left_most_pos - left most soft clipping + sum of all remaining number in cigar
-    return start_position
+    return start_position <- int
 
     Input: (1,24M12S,16)
     Output: 37
@@ -55,8 +55,8 @@ Open input.sam file to read and output.sam to write:
 
     UMI <- str = regex search in column 1
     flag <- int = column 2
-    chromosome_number = column 3
-    left_most_pos = column 4
+    chromosome_number <- int = column 3
+    left_most_pos <- int = column 4
     cigar <- str = column 6
 
     start_position = adjust_position (left_most_pos, cigar,flag)
