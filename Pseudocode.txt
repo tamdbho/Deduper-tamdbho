@@ -1,0 +1,69 @@
+Problem:
+Library prep results in PCR duplicates that comes from amplification step. 
+A lot of factors affect amplification rate such as GC concennt, sequence length, etc. 
+This can interfere with our data analysis especially in a differential gene expression analysis
+Reference based de-duplication process uses aligned reads and eliminate all duplicates, retaining only one original copy per read.
+
+Given: SAM file with aligned reads
+Identify duplicates:
+- Duplicates need to be on the same chromosome at the same starting position on same strand 
+- Takes into account soft clipping to determing starting position (5' end). 
+- Differentiate duplicates using Unique Molecular Identifier (UMI). 
+Output: a SAM file with only one unique copy per read
+
+Create input SAM file:
+we only care about mapped reads:
+    Use samtool to view only mapped reads using bitwise flag 4 direct to an input.sam
+sort input SAM file by chromosome number before using as input file
+    bash command sort input.sam file by column 3
+
+Pseudocode:
+
+Create function:
+adjust_position (left_most_pos, cigar, flag):
+    '''This function takes in the left most position (given by column 4 in SAM file), cigar string and bitwise flag; evaluate strandedness then correct the starting position for soft clipping'''
+    evaluate bitwise flag (16):
+        if forward strand:
+            soft clipping is left most "S"-number
+            start_position = left_most_pos - soft clipping
+        if reverse_strand:
+            start_position = left_most_pos - left most soft clipping + sum of all remaining number in cigar
+    return start_position
+
+    Input: (1,24M12S,16)
+    Output: 37
+    Input(20,20S40M2S,16)
+    Output: 42
+    Input: (25,24S10M3S,4)
+    Output: 1
+
+
+Open STL96.txt:
+    read line by line
+    Store all UMI in a set  
+
+Create empty dictionaries: 
+evaluate_dict <- dict
+
+Open input.sam file to read and output.sam to write:
+    read line by line input.sam:
+    strip "\n" from end of line
+    ignore line startwith "@"
+
+    split line using tab delimeters 
+    #each line is split into different "columns"
+
+    UMI <- str = regex search in column 1
+    flag <- int = column 2
+    chromosome_number = column 3
+    left_most_pos = column 4
+    cigar <- str = column 6
+
+    start_position = adjust_position (left_most_pos, cigar,flag)
+
+    set 3 conditions:
+        if UMI in UMI_set 
+        if UMI is not key and starting_position + chromosome are not values in evaluate_dict
+        if same strand:
+            append UMI as key and starting_position + chromosome + strand as values in evaluate_dict
+            write all columns to output.sam
