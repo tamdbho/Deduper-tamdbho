@@ -75,7 +75,7 @@ unique_counter = int()
 chromosome_counter = {}
 
 # Begin writing:
-with open (args.file,"r") as f_in, open(f'{output_file}/output.sam',"w") as f_out, open (f'{output_file}/duplicates.sam',"w") as f_dupe:
+with open (args.file,"r") as f_in, open(f'{output_file}/uniqueReads.sam',"w") as f_out, open (f'{output_file}/Duplicates.sam',"w") as f_dupe:
     for line in f_in:
         line = line.strip("\n")
         if line.startswith("@"):
