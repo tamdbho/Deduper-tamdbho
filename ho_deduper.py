@@ -3,7 +3,7 @@ import re
 import argparse
 
 def get_args():
-    parser = argparse.ArgumentParser(description="Take uniquely mapped SAM file, remove PCR duplicates and output: (1) SAM file with only unique reads, (1) duplicate.sam file containing other PCR duplicates, and (1) report.tsv file ")
+    parser = argparse.ArgumentParser(description="Take uniquely mapped SAM file, sorted by chromosome (and starting position), remove PCR duplicates and output: (1) SAM file with only unique reads, (1) duplicate.sam file containing other PCR duplicates, and (1) report.tsv file ")
     parser.add_argument("-f", "--file", help="Path to input SAM file", type= str, required=True)
     parser.add_argument("-u", "--umi", help="Path to umi file", type=str)
     parser.add_argument("-o", "--outfile", help="Path to output directory", type=str)
